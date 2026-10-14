@@ -1,0 +1,12 @@
+# APT packages installed via apt.txt by repo2docker (kept in sync with the
+# Dockerfile). If you only use the Dockerfile this file is redundant but
+# harmless. If you switch to a non-Dockerfile Binder build (requirements.txt
+# only), this is what installs the toolchain.
+build-essential
+ca-certificates
+curl
+git
+file
+unzip
+xz-utils
+avrdude
