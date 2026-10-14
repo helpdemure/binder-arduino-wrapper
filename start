@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# `start` is invoked by repo2docker when the container boots. We use it to
+# print a friendly banner so the user immediately knows where the cloned
+# analogdevicesinc/arduino source lives.
+set -euo pipefail
+
+cat <<'BANNER'
+
+============================================================
+  Binder wrapper for analogdevicesinc/arduino
+  Upstream source cloned to: /home/jovyan/arduino-lib
+  arduino-cli available on PATH — try `arduino-cli version`
+  Open the "Welcome.ipynb" notebook for a guided tour.
+============================================================
+
+BANNER
+
+# Hand off to the default Jupyter start command.
+exec /usr/local/bin/start-singleuser.sh "$@"
