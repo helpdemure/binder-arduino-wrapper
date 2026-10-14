@@ -39,13 +39,15 @@ RUN mkdir -p /home/jovyan/.arduino15 \
     && chown -R "${NB_UID}:users" /home/jovyan/.arduino15
 
 # --- 3. Clone the upstream library into the container ----------------------
-# Pinned to the same commit Binder originally tried (d5946b9). Bump this if
-# you want a newer snapshot.
+# Pinned to commit d5946b9 on the master branch (the latest master HEAD at the
+# time this wrapper was built). Bump ARDUINO_REPO_REF to track a newer commit.
+# We do a full clone so the specific commit is reachable (a shallow --depth 1
+# clone would only have the remote HEAD commit and `git fetch --depth 1 origin
+# <sha>` would fail with "couldn't find remote ref <sha>").
 ARG ARDUINO_REPO_URL=https://github.com/analogdevicesinc/arduino
 ARG ARDUINO_REPO_REF=d5946b9
-RUN git clone --depth 1 "${ARDUINO_REPO_URL}" /home/jovyan/arduino-lib \
+RUN git clone "${ARDUINO_REPO_URL}" /home/jovyan/arduino-lib \
     && cd /home/jovyan/arduino-lib \
-    && git fetch --depth 1 origin "${ARDUINO_REPO_REF}" \
     && git checkout "${ARDUINO_REPO_REF}" \
     && chown -R "${NB_UID}:users" /home/jovyan/arduino-lib
 
