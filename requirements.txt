@@ -1,0 +1,9 @@
+# Python deps for the welcome notebook + any Python tools shipped with the
+# analogdevicesinc/arduino library. Keep this list lean — every extra package
+# slows the Binder build.
+jupyterlab>=4
+notebook>=7
+ipywidgets>=8
+matplotlib>=3.7
+numpy>=1.24
+pyserial>=3.5
