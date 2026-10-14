@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# postBuild runs after the Dockerfile is built and after pip install.
+# Used here to update the arduino-cli core index so the welcome notebook can
+# immediately query available boards / libraries without a first-run network
+# round-trip.
+set -euo pipefail
+
+echo "[postBuild] Updating arduino-cli core index..."
+arduino-cli core update-index || true
+
+echo "[postBuild] Available cores:"
+arduino-cli core list || true
+
+echo "[postBuild] Installed libraries (after cloning analogdevicesinc/arduino):"
+arduino-cli lib list || true
+
+echo "[postBuild] Building a sample sketch from analogdevicesinc/arduino to verify the toolchain..."
+# Try to compile one of the example sketches shipped with the library.
+# This is intentionally best-effort: some examples target boards that aren't
+# installed by default, and we don't want a failing example to abort the
+# Binder build.
+EXAMPLE_DIR="$(find /home/jovyan/arduino-lib -type d -name examples | head -n1 || true)"
+if [ -n "${EXAMPLE_DIR}" ]; then
+    SKETCH="$(find "${EXAMPLE_DIR}" -name '*.ino' | head -n1 || true)"
+    if [ -n "${SKETCH}" ]; then
+        echo "[postBuild] Compiling ${SKETCH} for arduino:avr:uno (best-effort)..."
+        arduino-cli compile --fqbn arduino:avr:uno "${SKETCH}" || \
+            echo "[postBuild] (compile failed — that's OK, the container is still usable)"
+    fi
+fi
+
+echo "[postBuild] Done."
